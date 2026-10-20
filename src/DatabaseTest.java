@@ -47,6 +47,15 @@ public class DatabaseTest {
             );
 
             //System.out.println("Database and tables created successfully!");
+           var rs = con.createStatement().executeQuery(
+               "SELECT name FROM sqlite_master WHERE type='table'"
+           );
+
+            while (rs.next()) {
+                System.out.println("Table: " + rs.getString("name"));
+            }
+
+            rs.close();
             System.out.println("Connected to database successfully!");
             System.out.println("Users, items and claims tables are ready!");
         } catch (Exception e) {
