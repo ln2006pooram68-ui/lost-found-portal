@@ -1,43 +1,54 @@
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+//import java.sql.DriverManager;
 import java.sql.Statement;
-import java.sql.ResultSet;
 
 public class DatabaseTest {
+
     public static void main(String[] args) {
-        try {
-            Connection con = DriverManager.getConnection(
-                "jdbc:sqlite:database/test.db"
+
+        //String url = "jdbc:sqlite:database/lostfound.db";
+
+       // try (Connection con = DriverManager.getConnection(url);
+       //      Statement stmt = con.createStatement()) {
+        try (Connection con = DBConnection.getInstance().getConnection();
+            Statement stmt = con.createStatement()) {
+                
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS users (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT NOT NULL, " +
+                "email TEXT NOT NULL UNIQUE, " +
+                "password_hash TEXT NOT NULL, " +
+                "role TEXT NOT NULL DEFAULT 'USER')"
             );
 
-            Statement stmt = con.createStatement();
-
-            String sql = "INSERT INTO items " +
-                         "(item_name, description, location, date_reported, status) " +
-                         "VALUES ('Blue Wallet', 'Small blue wallet', " +
-                         "'College Library', '2026-10-17', 'Lost')";
-
-            stmt.executeUpdate(sql);
-
-            System.out.println("Item inserted successfully!");
-
-            ResultSet rs = stmt.executeQuery(
-                "SELECT * FROM items"
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS items (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT NOT NULL, " +
+                "description TEXT, " +
+                "location TEXT, " +
+                "item_date TEXT, " +
+                "type TEXT NOT NULL, " +
+                "status TEXT NOT NULL DEFAULT 'PENDING', " +
+                "reporter_id INTEGER NOT NULL, " +
+                "FOREIGN KEY (reporter_id) REFERENCES users(id))"
             );
 
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getInt("id"));
-                System.out.println("Item: " + rs.getString("item_name"));
-                System.out.println("Location: " + rs.getString("location"));
-                System.out.println("Status: " + rs.getString("status"));
-                System.out.println("-------------------");
-            }
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS claims (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "item_id INTEGER NOT NULL, " +
+                "claimant_id INTEGER NOT NULL, " +
+                "status TEXT NOT NULL DEFAULT 'PENDING', " +
+                "FOREIGN KEY (item_id) REFERENCES items(id), " +
+                "FOREIGN KEY (claimant_id) REFERENCES users(id))"
+            );
 
-            rs.close();
-            stmt.close();
-            con.close();
-
+            //System.out.println("Database and tables created successfully!");
+            System.out.println("Connected to database successfully!");
+            System.out.println("Users, items and claims tables are ready!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
