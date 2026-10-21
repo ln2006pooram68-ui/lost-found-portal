@@ -83,7 +83,7 @@ public class ReportItemFrame extends JFrame {
 
         if (saved) {
             JOptionPane.showMessageDialog(this,
-                    "Report submitted! Status: PENDING (waiting for admin approval).");
+                    "Report submitted! Status: PENDING ");
             nameField.setText("");
             descriptionArea.setText("");
             locationField.setText("");

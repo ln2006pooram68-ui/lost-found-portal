@@ -6,7 +6,7 @@ import java.sql.SQLException;
 public class DBConnection {
 
     private static final String URL =
-            "jdbc:sqlite:database/lostfound.db";
+    "jdbc:sqlite:" + new java.io.File("database/lostfound.db").getAbsolutePath();
 
     private static final DBConnection instance =
             new DBConnection();
@@ -18,9 +18,10 @@ public class DBConnection {
         return instance;
     }
 
-    public Connection getConnection()
-            throws SQLException {
+    public Connection getConnection() throws SQLException {
+    System.out.println("Database location: " +
+        new java.io.File("database/lostfound.db").getAbsolutePath());
 
-        return DriverManager.getConnection(URL);
-    }
+    return DriverManager.getConnection(URL);
+}
 }
