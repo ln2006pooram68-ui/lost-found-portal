@@ -24,6 +24,19 @@ public class DatabaseTest {
             );
 
             stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS messages (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "item_id INTEGER NOT NULL, " +
+                "sender_id INTEGER NOT NULL, " +
+                "receiver_id INTEGER NOT NULL, " +
+                "message_text TEXT NOT NULL, " +
+                "sent_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY (item_id) REFERENCES items(id), " +
+                "FOREIGN KEY (sender_id) REFERENCES users(id), " +
+                "FOREIGN KEY (receiver_id) REFERENCES users(id))"
+            );
+
+            stmt.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS items (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT NOT NULL, " +
@@ -57,8 +70,7 @@ public class DatabaseTest {
 
             rs.close();
             System.out.println("Connected to database successfully!");
-            System.out.println("Users, items and claims tables are ready!");
-        } catch (Exception e) {
+            System.out.println("Users, items, claims and messages tables are ready!");        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

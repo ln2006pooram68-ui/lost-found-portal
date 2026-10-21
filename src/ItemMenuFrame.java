@@ -26,7 +26,7 @@ public class ItemMenuFrame extends JFrame {
 
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new SearchItemFrame().setVisible(true);
+                 new SearchItemFrame(userId).setVisible(true);
             }
         });
 
