@@ -11,7 +11,7 @@ JPasswordField passwordField = new JPasswordField(15);
 
 public Register() {
 setTitle("User Registration");
-setSize(400, 250);
+setSize(450, 220);
 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 setLocationRelativeTo(null);
 
@@ -23,11 +23,22 @@ panel.add(makeRow("Email:", emailField));
 panel.add(makeRow("Password:", passwordField));
 
 JButton button = new JButton("Register");
-panel.add(button);
+JButton loginButton = new JButton("Back to Login");
+
+JPanel buttonPanel = new JPanel();
+buttonPanel.add(button);
+buttonPanel.add(loginButton);
+
+panel.add(buttonPanel);
 
 add(panel);
 
 button.addActionListener(e -> registerUser());
+
+loginButton.addActionListener(e -> {
+new Login().setVisible(true);
+dispose();
+});
 
 }
 
@@ -67,8 +78,16 @@ JOptionPane.showMessageDialog(this, e.getMessage());
 
 JPanel makeRow(String text, JComponent field) {
 JPanel row = new JPanel(new java.awt.BorderLayout(10, 5));
-row.add(new JLabel(text), java.awt.BorderLayout.WEST);
+row.setMaximumSize(new java.awt.Dimension(400, 35));
+
+JLabel label = new JLabel(text);
+label.setPreferredSize(new java.awt.Dimension(80, 25));
+
+field.setPreferredSize(new java.awt.Dimension(250, 25));
+
+row.add(label, java.awt.BorderLayout.WEST);
 row.add(field, java.awt.BorderLayout.CENTER);
+
 return row;
 }
 public static void main(String[] args) {
