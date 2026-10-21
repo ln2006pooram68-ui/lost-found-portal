@@ -178,61 +178,86 @@ public class SearchItemFrame extends JFrame {
     }
 
     private void messageSelectedReporter() {
-        int selectedRow = table.getSelectedRow();
+    int selectedRow = table.getSelectedRow();
 
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(
-                    this, "Please select an item first."
-            );
-            return;
-        }
-
-        int itemId = Integer.parseInt(
-                tableModel.getValueAt(selectedRow, 0).toString()
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(
+                this, "Please select an item first."
         );
+        return;
+    }
 
-        String itemName =
-                tableModel.getValueAt(selectedRow, 1).toString();
+    int itemId = Integer.parseInt(
+            tableModel.getValueAt(selectedRow, 0).toString()
+    );
 
-        int reporterId;
+    String itemName =
+            tableModel.getValueAt(selectedRow, 1).toString();
 
-        String sql = "SELECT reporter_id FROM items WHERE id = ?";
+    int reporterId;
 
-        try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    // Find who reported this item.
+    String sql = "SELECT reporter_id FROM items WHERE id = ?";
 
-            ps.setInt(1, itemId);
+    try (Connection con = DBConnection.getInstance().getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) {
-                    JOptionPane.showMessageDialog(
-                            this, "Could not find the item's reporter."
-                    );
-                    return;
-                }
+        ps.setInt(1, itemId);
 
-                reporterId = rs.getInt("reporter_id");
+        try (ResultSet rs = ps.executeQuery()) {
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(
+                        this, "Could not find the item."
+                );
+                return;
             }
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(
-                    this, "Could not find reporter: " + e.getMessage()
-            );
-            return;
+            reporterId = rs.getInt("reporter_id");
         }
 
-        if (reporterId == userId) {
-            JOptionPane.showMessageDialog(
-                    this, "You cannot message yourself about your own item."
-            );
-            return;
+        int otherUserId;
+
+        if (reporterId != userId) {
+            // The current user is not the reporter.
+            // Open a conversation with the reporter.
+            otherUserId = reporterId;
+
+        } else {
+            // The current user is the finder/reporter.
+            // Find a person who has claimed this item.
+            String claimSql =
+                    "SELECT claimant_id FROM claims " +
+                    "WHERE item_id = ? AND claimant_id != ? " +
+                    "ORDER BY id DESC LIMIT 1";
+
+            try (PreparedStatement claimPs =
+                         con.prepareStatement(claimSql)) {
+
+                claimPs.setInt(1, itemId);
+                claimPs.setInt(2, userId);
+
+                try (ResultSet claimRs = claimPs.executeQuery()) {
+                    if (!claimRs.next()) {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "No other user has claimed this item yet."
+                        );
+                        return;
+                    }
+
+                    otherUserId = claimRs.getInt("claimant_id");
+                }
+            }
         }
 
+        new ChatFrame(itemId, userId, otherUserId)
+                .setVisible(true);
+
+    } catch (SQLException e) {
         JOptionPane.showMessageDialog(
                 this,
-                "Opening conversation about: " + itemName
+                "Could not open conversation: " + e.getMessage()
         );
-
-        new ChatFrame(itemId, userId, reporterId).setVisible(true);
     }
+}
 }
