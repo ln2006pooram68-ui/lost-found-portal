@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "VerificationTest",
+            "request": "launch",
+            "mainClass": "VerificationTest",
+            "projectName": "lost-found-portal_ac4f7956"
+        },
+        {
+            "type": "java",
+            "name": "CreateVerificationVotesTable",
+            "request": "launch",
+            "mainClass": "CreateVerificationVotesTable",
+            "projectName": "lost-found-portal_ac4f7956"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
