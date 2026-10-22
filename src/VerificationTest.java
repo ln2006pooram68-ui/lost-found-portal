@@ -5,9 +5,10 @@ public class VerificationTest {
 
         VerificationDAO dao = new VerificationDAO();
 
+        System.out.println("Credibility score test");
+
         double score = dao.getCredibilityScore(1);
 
-        System.out.println(
-                "Credibility score for item 1: " + score + "%");
+        System.out.println("Item 1 score: " + score + "%");
     }
 }
