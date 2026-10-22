@@ -3,6 +3,7 @@ public class VerificationTest {
  
         VerificationDAO dao = new VerificationDAO();
 
+<<<<<<< HEAD
         int itemId = 1;
 
         int votes = dao.getVoteCount(itemId);
@@ -19,5 +20,12 @@ public class VerificationTest {
         }
 
         System.out.println("Verification status: " + status);
+=======
+        System.out.println("Credibility score test");
+
+        double score = dao.getCredibilityScore(1);
+
+        System.out.println("Item 1 score: " + score + "%");
+>>>>>>> 25fb50cae658b06511bf4ad977747208ac7f97a9
     }
 }

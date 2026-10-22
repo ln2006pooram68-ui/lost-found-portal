@@ -82,6 +82,32 @@ public class VerificationDAO {
 
         return 0.0;
     }
+    
+public int getTotalVotes(int itemId) {
+
+    String sql = "SELECT COUNT(*) AS total_count "
+            + "FROM verification_votes WHERE item_id = ?";
+
+    try (Connection con =
+                DBConnection.getInstance().getConnection();
+         PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+        pstmt.setInt(1, itemId);
+
+        try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total_count");
+            }
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error counting votes:");
+        e.printStackTrace();
+    }
+
+    return 0;
+}
+
 
     public String getVerificationStatus(int itemId) {
         int votes = getVoteCount(itemId);
