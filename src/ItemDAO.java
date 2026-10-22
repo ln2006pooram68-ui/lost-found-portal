@@ -33,4 +33,27 @@ public class ItemDAO {
             return false;
         }
     }
+    
+public boolean markAsReturned(int itemId, int reporterId) {
+    String sql = "UPDATE items SET status = 'RETURNED' "
+            + "WHERE id = ? "
+            + "AND reporter_id = ? "
+            + "AND UPPER(type) = 'FOUND' "
+            + "AND UPPER(status) = 'APPROVED'";
+
+    try (
+        Connection con = DBConnection.getInstance().getConnection();
+        PreparedStatement ps = con.prepareStatement(sql)
+    ) {
+        ps.setInt(1, itemId);
+        ps.setInt(2, reporterId);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
 }

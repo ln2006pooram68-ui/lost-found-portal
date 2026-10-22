@@ -9,7 +9,8 @@ public class ItemSearchDAO {
         Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
 
         String sql = "SELECT id, name, description, location, item_date, type, status "
-                + "FROM items WHERE name LIKE ? AND location LIKE ? ORDER BY id DESC";
+        + "FROM items WHERE name LIKE ? AND location LIKE ? "
+        + "AND UPPER(status) <> 'APPROVED' ORDER BY id DESC";
 
         try (Connection con = DBConnection.getInstance().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
