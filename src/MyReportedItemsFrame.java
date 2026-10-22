@@ -85,49 +85,46 @@ public class MyReportedItemsFrame extends JFrame {
         }
     }
 
+    
     private void markSelectedAsReturned() {
         int selectedRow = table.getSelectedRow();
 
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(
                     this, "Please select an item first.");
-            return;
+         return;
         }
 
         int itemId = (int) model.getValueAt(selectedRow, 0);
-        String type = String.valueOf(model.getValueAt(selectedRow, 4));
-        String status = String.valueOf(model.getValueAt(selectedRow, 5));
+      String type = String.valueOf(model.getValueAt(selectedRow, 4));
 
-        if (!"FOUND".equalsIgnoreCase(type)
-                || !"APPROVED".equalsIgnoreCase(status)) {
+     if (!"FOUND".equalsIgnoreCase(type)) {
             JOptionPane.showMessageDialog(
-                    this,
-                    "Only APPROVED FOUND items can be marked as returned.");
+                    this, "Only FOUND items can be marked as returned.");
             return;
-        }
+      }
 
         int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "Mark this item as RETURNED?",
-                "Confirm",
+                "This will permanently delete the item. Continue?",
+                "Confirm deletion",
                 JOptionPane.YES_NO_OPTION
-        );
+     );
 
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
 
-        boolean updated =
-                new ItemDAO().markAsReturned(itemId, userId);
+        boolean deleted = new ItemDAO().deleteReturnedItem(itemId, userId);
 
-        if (updated) {
-            JOptionPane.showMessageDialog(
-                    this, "Item marked as RETURNED.");
-            loadItems();
-        } else {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Item was not updated. Check its status and try again.");
-        }
+    if (deleted) {
+        JOptionPane.showMessageDialog(
+                this, "Item deleted successfully.");
+        loadItems();
+    } else {
+        JOptionPane.showMessageDialog(
+                this, "Item could not be deleted.");
     }
+}
+
 }

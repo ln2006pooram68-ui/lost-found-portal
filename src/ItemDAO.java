@@ -56,4 +56,24 @@ public boolean markAsReturned(int itemId, int reporterId) {
     }
 }
 
+public boolean deleteReturnedItem(int itemId, int userId) {
+    String sql = "DELETE FROM items WHERE id = ? AND reporter_id = ? AND UPPER(type) = 'FOUND'";
+
+    try (
+        java.sql.Connection con =
+                DBConnection.getInstance().getConnection();
+        java.sql.PreparedStatement ps = con.prepareStatement(sql)
+    ) {
+        ps.setInt(1, itemId);
+        ps.setInt(2, userId);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (java.sql.SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+
 }
